@@ -1,0 +1,93 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus"
+    },
+    "storageAccountName": {
+      "value": "storageprojet2"
+    },
+    "accountType": {
+      "value": "Standard_RAGRS"
+    },
+    "kind": {
+      "value": "StorageV2"
+    },
+    "minimumTlsVersion": {
+      "value": "TLS1_2"
+    },
+    "supportsHttpsTrafficOnly": {
+      "value": true
+    },
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "allowSharedKeyAccess": {
+      "value": true
+    },
+    "defaultOAuth": {
+      "value": false
+    },
+    "accessTier": {
+      "value": "Hot"
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "allowCrossTenantReplication": {
+      "value": false
+    },
+    "networkAclsBypass": {
+      "value": "AzureServices"
+    },
+    "networkAclsDefaultAction": {
+      "value": "Deny"
+    },
+    "networkAclsIpRules": {
+      "value": []
+    },
+    "dnsEndpointType": {
+      "value": "Standard"
+    },
+    "largeFileSharesState": {
+      "value": "Disabled"
+    },
+    "keySource": {
+      "value": "Microsoft.Storage"
+    },
+    "encryptionEnabled": {
+      "value": true
+    },
+    "keyTypeForTableAndQueueEncryption": {
+      "value": "Account"
+    },
+    "infrastructureEncryptionEnabled": {
+      "value": false
+    },
+    "isBlobSoftDeleteEnabled": {
+      "value": true
+    },
+    "blobSoftDeleteRetentionDays": {
+      "value": 30
+    },
+    "isContainerSoftDeleteEnabled": {
+      "value": true
+    },
+    "containerSoftDeleteRetentionDays": {
+      "value": 30
+    },
+    "isShareSoftDeleteEnabled": {
+      "value": false
+    },
+    "shareSoftDeleteRetentionDays": {
+      "value": 0
+    },
+    "container1Name": {
+      "value": "images"
+    },
+    "container2Name": {
+      "value": "processed-images"
+    }
+  }
+}

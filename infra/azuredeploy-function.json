@@ -12,14 +12,6 @@
       "type": "string",
       "defaultValue": "eastus"
     },
-    "use32BitWorkerProcess": {
-      "type": "bool",
-      "defaultValue": true
-    },
-    "ftpsState": {
-      "type": "string",
-      "defaultValue": "Disabled"
-    },
     "storageAccountName": {
       "type": "string"
     },
@@ -27,9 +19,14 @@
       "type": "string",
       "defaultValue": "images"
     },
-    "netFrameworkVersion": {
-      "type": "string",
-      "defaultValue": "v6.0"
+    "serviceBusConnectionString": {
+      "type": "string"
+    },
+    "hostingPlanName": {
+      "type": "string"
+    },
+    "serverFarmResourceGroup": {
+      "type": "string"
     },
     "sku": {
       "type": "string",
@@ -38,48 +35,12 @@
     "skuCode": {
       "type": "string",
       "defaultValue": "Y1"
-    },
-    "workerSize": {
-      "type": "string",
-      "defaultValue": "Small"
-    },
-    "workerSizeId": {
-      "type": "string",
-      "defaultValue": "0"
-    },
-    "numberOfWorkers": {
-      "type": "string",
-      "defaultValue": "1"
-    },
-    "hostingPlanName": {
-      "type": "string"
-    },
-    "serverFarmResourceGroup": {
-      "type": "string"
-    },
-    "alwaysOn": {
-      "type": "bool",
-      "defaultValue": true
     }
   },
   "variables": {
     "contentShare": "[concat(parameters('name'), 'content')]"
   },
   "resources": [
-    {
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-05-01",
-      "name": "[parameters('storageAccountName')]",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "Standard_LRS"
-      },
-      "kind": "StorageV2",
-      "properties": {
-        "minimumTlsVersion": "TLS1_2",
-        "supportsHttpsTrafficOnly": true
-      }
-    },
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
@@ -107,6 +68,10 @@
               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value, ';EndpointSuffix=core.windows.net')]"
             },
             {
+              "name": "ServiceBusConnectionString",
+              "value": "[parameters('serviceBusConnectionString')]"
+            },
+            {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
               "value": "1"
             }
@@ -122,9 +87,8 @@
       "location": "[parameters('location')]",
       "properties": {
         "name": "[parameters('hostingPlanName')]",
-        "workerSize": "[parameters('workerSize')]",
-        "workerSizeId": "[parameters('workerSizeId')]",
-        "numberOfWorkers": "[parameters('numberOfWorkers')]"
+        "workerSize": "0",
+        "numberOfWorkers": "1"
       },
       "sku": {
         "Tier": "[parameters('sku')]",

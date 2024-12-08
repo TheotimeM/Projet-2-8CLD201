@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionId": {
+      "value": "6f829ed3-9404-40fa-95ce-759de2a2f00e"
+    },
+    "name": {
+      "value": "FunctionAppProjet2"
+    },
+    "location": {
+      "value": "Canada Central"
+    },
+    "ftpsState": {
+      "value": "FtpsOnly"
+    },
+    "storageAccountName": {
+      "value": "projet2b498"
+    },
+    "containerName": {
+      "value": "images"
+    },
+    "sku": {
+      "value": "Dynamic"
+    },
+    "skuCode": {
+      "value": "Y1"
+    },
+    "workerSize": {
+      "value": "0"
+    },
+    "workerSizeId": {
+      "value": "0"
+    },
+    "numberOfWorkers": {
+      "value": "1"
+    },
+    "use32BitWorkerProcess": {
+      "value": false
+    },
+    "netFrameworkVersion": {
+      "value": "v8.0"
+    },
+    "hostingPlanName": {
+      "value": "ASP-Projet2-8acc"
+    },
+    "serverFarmResourceGroup": {
+      "value": "Projet-2"
+    },
+    "alwaysOn": {
+      "value": false
+    }
+  }
+}

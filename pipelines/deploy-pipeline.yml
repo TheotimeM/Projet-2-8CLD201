@@ -1,5 +1,11 @@
-trigger:
-- main
+resources:
+  pipelines:
+    - pipeline: buildPipelineAlias
+      source: TheotimeM.Projet-2-8CLD201
+      trigger:
+        branches:
+          include:
+            - main
 
 pool:
   name: 'Projet2CLD'

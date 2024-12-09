@@ -1,0 +1,46 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+# Étape 1 : Installer le SDK .NET
+- task: UseDotNet@2
+  displayName: 'Installer .NET SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
+
+# Étape 2 : Restaurer les dépendances
+- script: |
+    dotnet restore
+  workingDirectory: './FunctionAzure'
+  displayName: 'Restaurer les dépendances'
+
+# Étape 3 : Compiler le projet
+- script: |
+    dotnet build -c Release
+  workingDirectory: './FunctionAzure'
+  displayName: 'Compiler le projet'
+
+# Étape 4 : Publier le projet
+- script: |
+    dotnet publish -c Release -o ./publish
+  workingDirectory: './FunctionAzure'
+  displayName: 'Publier le projet'
+
+# Étape 5 : Archiver le package
+- task: ArchiveFiles@2
+  displayName: 'Archiver les fichiers publiés'
+  inputs:
+    rootFolderOrFile: './FunctionAzure/publish'
+    archiveFile: '$(Build.ArtifactStagingDirectory)\\FunctionAzure.zip'
+    archiveType: 'zip'
+
+# Étape 6 : Publier l’artefact de build
+- task: PublishBuildArtifacts@1
+  displayName: 'Publier l’artefact'
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'FunctionApp'

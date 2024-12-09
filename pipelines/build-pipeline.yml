@@ -40,7 +40,7 @@ steps:
 - task: ArchiveFiles@2
   displayName: 'Archiver les fichiers publiés'
   inputs:
-    rootFolderOrFile: './azure-functions/publish'
+    rootFolderOrFile: './azure-functions/publishs'  # Utiliser le même dossier que dans le publish
     archiveFile: '$(Build.ArtifactStagingDirectory)\\azure-functions.zip'
     archiveType: 'zip'
 

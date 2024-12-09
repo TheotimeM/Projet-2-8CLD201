@@ -44,3 +44,24 @@ steps:
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'FunctionApp'
+
+# Étape 7 : Récupérer dynamiquement la clé de connexion Service Bus
+- task: AzureCLI@2
+  displayName: 'Récupérer la clé de connexion Service Bus'
+  inputs:
+    azureSubscription: '<Nom de votre connexion de service Azure>'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list \
+        --resource-group '<Nom du groupe de ressources>' \
+        --namespace-name '<Nom du namespace Service Bus>' \
+        --name 'RootManageSharedAccessKey' \
+        --query 'primaryConnectionString' -o tsv)
+      echo "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
+
+# Étape 8 : Transmettre la clé aux étapes suivantes
+# Si vous avez un déploiement Function App qui suit, cette variable sera accessible
+- script: |
+    echo "Clé Service Bus récupérée : $(ServiceBusConnectionString)"
+  displayName: 'Afficher la clé récupérée (pour vérification)'

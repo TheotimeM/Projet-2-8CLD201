@@ -1,0 +1,66 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  ServiceBusConnectionString: ''
+
+steps:
+# Étape 1 : Déployer le Blob Storage
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Déployer le Blob Storage'
+  inputs:
+    azureResourceManagerConnection: '<Nom de la connexion Azure>'
+    resourceGroupName: '<Nom du groupe de ressources>'
+    location: 'eastus'
+    templateLocation: 'Linked artifact'
+    csmFile: './infra/deploy-storage.json'
+    csmParametersFile: './infra/parameters-storage.json'
+
+# Étape 2 : Déployer le Service Bus
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Déployer le Service Bus'
+  inputs:
+    azureResourceManagerConnection: '<Nom de la connexion Azure>'
+    resourceGroupName: '<Nom du groupe de ressources>'
+    location: 'eastus'
+    templateLocation: 'Linked artifact'
+    csmFile: './infra/deploy-servicebus.json'
+    csmParametersFile: './infra/parameters-servicebus.json'
+
+# Étape 3 : Récupérer la clé de connexion Service Bus
+- task: AzureCLI@2
+  displayName: 'Récupérer la clé de connexion Service Bus'
+  inputs:
+    azureSubscription: '<Nom de la connexion Azure>'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list \
+        --resource-group '<Nom du groupe de ressources>' \
+        --namespace-name 'AzureBus-TMEB' \
+        --name 'RootManageSharedAccessKey' \
+        --query 'primaryConnectionString' -o tsv)
+      echo "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
+  condition: succeeded()
+
+# Étape 4 : Déployer la Function App
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Déployer la Function App'
+  inputs:
+    azureResourceManagerConnection: '<Nom de la connexion Azure>'
+    resourceGroupName: '<Nom du groupe de ressources>'
+    location: 'eastus'
+    templateLocation: 'Linked artifact'
+    csmFile: './infra/deploy-functionapp.json'
+    csmParametersFile: './infra/parameters-functionapp.json'
+    overrideParameters: >
+      -serviceBusConnectionString "$(ServiceBusConnectionString)"
+
+# Étape 5 : Vérifier le déploiement
+- script: |
+    echo "Clé Service Bus utilisée : $(ServiceBusConnectionString)"
+    echo "Déploiement terminé avec succès."
+  displayName: 'Vérification finale'

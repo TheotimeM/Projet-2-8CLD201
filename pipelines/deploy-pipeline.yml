@@ -12,8 +12,8 @@ steps:
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Déployer le Blob Storage'
   inputs:
-    azureResourceManagerConnection: '<Nom de la connexion Azure>'
-    resourceGroupName: '<Nom du groupe de ressources>'
+    azureResourceManagerConnection: 'AzureConnectionSub1'
+    resourceGroupName: 'Projet-2'
     location: 'eastus'
     templateLocation: 'Linked artifact'
     csmFile: './infra/deploy-storage.json'
@@ -23,8 +23,8 @@ steps:
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Déployer le Service Bus'
   inputs:
-    azureResourceManagerConnection: '<Nom de la connexion Azure>'
-    resourceGroupName: '<Nom du groupe de ressources>'
+    azureResourceManagerConnection: 'AzureConnectionSub1'
+    resourceGroupName: 'Projet-2'
     location: 'eastus'
     templateLocation: 'Linked artifact'
     csmFile: './infra/deploy-servicebus.json'
@@ -34,12 +34,12 @@ steps:
 - task: AzureCLI@2
   displayName: 'Récupérer la clé de connexion Service Bus'
   inputs:
-    azureSubscription: '<Nom de la connexion Azure>'
+    azureSubscription: 'AzureConnectionSub1'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
       CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list \
-        --resource-group '<Nom du groupe de ressources>' \
+        --resource-group 'Projet-2' \
         --namespace-name 'AzureBus-TMEB' \
         --name 'RootManageSharedAccessKey' \
         --query 'primaryConnectionString' -o tsv)
@@ -50,8 +50,8 @@ steps:
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Déployer la Function App'
   inputs:
-    azureResourceManagerConnection: '<Nom de la connexion Azure>'
-    resourceGroupName: '<Nom du groupe de ressources>'
+    azureResourceManagerConnection: 'AzureConnectionSub1'
+    resourceGroupName: 'Projet-2'
     location: 'eastus'
     templateLocation: 'Linked artifact'
     csmFile: './infra/deploy-functionapp.json'

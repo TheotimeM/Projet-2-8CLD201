@@ -51,23 +51,3 @@ steps:
     pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'FunctionApp'
 
-# Étape 7 : Récupérer dynamiquement la clé de connexion Service Bus
-- task: AzureCLI@2
-  displayName: 'Récupérer la clé de connexion Service Bus'
-  inputs:
-    azureSubscription: 'AzureConnectionSub1'
-    scriptType: 'ps'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      $CONNECTION_STRING = az servicebus namespace authorization-rule keys list `
-        --resource-group 'Projet-2' `
-        --namespace-name 'AzureBus-TMEB' `
-        --name 'RootManageSharedAccessKey' `
-        --query 'primaryConnectionString' -o tsv
-      Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
-
-
-# Étape 8 : Transmettre la clé aux étapes suivantes
-- script: |
-    echo "Clé Service Bus récupérée : $(ServiceBusConnectionString)"
-  displayName: 'Afficher la clé récupérée (pour vérification)'

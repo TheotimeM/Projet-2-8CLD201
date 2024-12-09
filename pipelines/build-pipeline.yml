@@ -56,15 +56,16 @@ steps:
   displayName: 'Récupérer la clé de connexion Service Bus'
   inputs:
     azureSubscription: 'AzureConnectionSub1'
-    scriptType: 'bash'
+    scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list \
-        --resource-group 'Projet-2' \
-        --namespace-name 'AzureBus-TMEB' \
-        --name 'RootManageSharedAccessKey' \
-        --query 'primaryConnectionString' -o tsv)
-      echo "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
+      $CONNECTION_STRING = az servicebus namespace authorization-rule keys list `
+        --resource-group 'Projet-2' `
+        --namespace-name 'AzureBus-TMEB' `
+        --name 'RootManageSharedAccessKey' `
+        --query 'primaryConnectionString' -o tsv
+      Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
+
 
 # Étape 8 : Transmettre la clé aux étapes suivantes
 - script: |

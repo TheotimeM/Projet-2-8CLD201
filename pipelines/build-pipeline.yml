@@ -12,6 +12,17 @@ steps:
     packageType: 'sdk'
     version: '6.x'
 
+# Étape 2 : Restaurer les dépendances
+- script: |
+    dotnet restore
+  workingDirectory: './azure-functions'
+  displayName: 'Restaurer les dépendances'
+
+# Étape 2.1 : Lister les dépendances NuGet
+- script: |
+    dotnet list package
+  workingDirectory: './azure-functions'
+  displayName: 'Lister les dépendances NuGet'
 
 # Étape 3 : Compiler le projet
 - script: |
@@ -21,7 +32,7 @@ steps:
 
 # Étape 4 : Publier le projet
 - script: |
-    dotnet publish -c Release -o ./publish
+    dotnet publish -c Release -o ./publishs
   workingDirectory: './azure-functions'
   displayName: 'Publier le projet'
 

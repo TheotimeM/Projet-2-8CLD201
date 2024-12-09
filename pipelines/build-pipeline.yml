@@ -62,9 +62,8 @@ steps:
     resourceGroupName: 'Projet-2'
     location: 'eastus'
     templateLocation: 'Linked artifact'
-    csmFile: 'infra/deploy-storage.json'
+    csmFile: 'infra/azuredeploy-storage.json'
     csmParametersFile: 'infra/parameters-storage.json'
-
 
 # Étape 8 (Deploy) : Déployer le Service Bus
 - task: AzureResourceManagerTemplateDeployment@3
@@ -74,8 +73,8 @@ steps:
     resourceGroupName: 'Projet-2'
     location: 'eastus'
     templateLocation: 'Linked artifact'
-    csmFile: './infra/deploy-servicebus.json'
-    csmParametersFile: './infra/parameters-servicebus.json'
+    csmFile: 'infra/azuredeploy-servicebus.json'
+    csmParametersFile: 'infra/parameters-servicebus.json'
 
 # Étape 9 (Deploy) : Récupérer la clé de connexion Service Bus
 - task: AzureCLI@2
@@ -101,8 +100,8 @@ steps:
     resourceGroupName: 'Projet-2'
     location: 'eastus'
     templateLocation: 'Linked artifact'
-    csmFile: './infra/deploy-functionapp.json'
-    csmParametersFile: './infra/parameters-functionapp.json'
+    csmFile: 'infra/azuredeploy-function.json'
+    csmParametersFile: 'infra/parameters-function.json'
     overrideParameters: >
       -serviceBusConnectionString "$(ServiceBusConnectionString)"
 

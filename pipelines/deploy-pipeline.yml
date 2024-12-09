@@ -31,22 +31,23 @@ steps:
     csmParametersFile: './infra/parameters-servicebus.json'
 
 # Étape 3 : Récupérer la clé de connexion Service Bus
+# On utilise scriptType: 'ps' (PowerShell) pour fonctionner correctement sur Windows.
 - task: AzureCLI@2
   displayName: 'Récupérer la clé de connexion Service Bus'
   inputs:
     azureSubscription: 'AzureConnectionSub1'
-    scriptType: 'bash'
+    scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list \
-        --resource-group 'Projet-2' \
-        --namespace-name 'AzureBus-TMEB' \
-        --name 'RootManageSharedAccessKey' \
-        --query 'primaryConnectionString' -o tsv)
-      echo "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
+      $CONNECTION_STRING = az servicebus namespace authorization-rule keys list `
+        --resource-group 'Projet-2' `
+        --namespace-name 'AzureBus-TMEB' `
+        --name 'RootManageSharedAccessKey' `
+        --query 'primaryConnectionString' -o tsv
+      Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
   condition: succeeded()
 
-# Étape 4 : Déployer la Function App
+# Étape 4 : Déployer la Function App en utilisant la clé récupérée
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Déployer la Function App'
   inputs:

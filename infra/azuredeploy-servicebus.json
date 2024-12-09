@@ -90,5 +90,11 @@
         ]
       }
     }
-  ]
+  ],
+  "outputs": {
+    "serviceBusConnectionString": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', parameters('namespaces_AzureBus_TMEB_name'), 'RootManageSharedAccessKey'), '2017-04-01').primaryConnectionString]"
+    }
+  }
 }

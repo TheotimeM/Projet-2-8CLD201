@@ -8,47 +8,48 @@ using Microsoft.Extensions.Logging;
 
 public static class ServiceBusQueueFunction
 {
-    // à modifier par les bons noms
-    private const string BlobConnectionString = "<YOUR_BLOB_STORAGE_CONNECTION_STRING>";
     private const string SourceContainerName = "images";
     private const string DestinationContainerName = "processed-images";
 
     [Function("ServiceBusQueueFunction")]
-    public static void Run(
-        [ServiceBusTrigger("imagequeue", Connection = "ServiceBusConnection")] string blobName,
+    public static async Task Run(
+        [ServiceBusTrigger("imagequeue", Connection = "ServiceBusConnectionString")] string blobName,
         ILogger log)
     {
         log.LogInformation($"Message reçu de la queue : {blobName}");
 
+        var blobConnectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+        var blobServiceClient = new BlobServiceClient(blobConnectionString);
+        var sourceContainer = blobServiceClient.GetBlobContainerClient(SourceContainerName);
+        var destinationContainer = blobServiceClient.GetBlobContainerClient(DestinationContainerName);
+
         try
         {
-            // Accéder au fichier blob
-            BlobServiceClient blobServiceClient = new(BlobConnectionString);
-            BlobContainerClient sourceContainer = blobServiceClient.GetBlobContainerClient(SourceContainerName);
-            BlobClient sourceBlob = sourceContainer.GetBlobClient(blobName);
-
-            if (!sourceBlob.Exists())
+            // Vérifie si le blob existe
+            var sourceBlob = sourceContainer.GetBlobClient(blobName);
+            if (!await sourceBlob.ExistsAsync())
             {
                 log.LogError($"Le blob {blobName} n'existe pas.");
                 return;
             }
 
-            // Télécharger le blob dans un Stream
-            using Stream originalBlobStream = sourceBlob.OpenRead();
-            using MemoryStream processedBlobStream = new();
+            // Télécharger le blob
+            await using var originalBlobStream = new MemoryStream();
+            await sourceBlob.DownloadToAsync(originalBlobStream);
 
-            // Appliquer le traitement (ajout du watermark)
+            // Appliquer un traitement (ajouter un watermark)
+            await using var processedBlobStream = new MemoryStream();
             ProcessImage(originalBlobStream, processedBlobStream, "Watermark Text");
             processedBlobStream.Position = 0;
 
-            // Sauvegarder le fichier traité dans un autre conteneur
-            BlobContainerClient destinationContainer = blobServiceClient.GetBlobContainerClient(DestinationContainerName);
-            BlobClient destinationBlob = destinationContainer.GetBlobClient(blobName);
-            destinationBlob.Upload(processedBlobStream, overwrite: true);
+            // Sauvegarder dans le conteneur cible
+            var destinationBlob = destinationContainer.GetBlobClient(blobName);
+            await destinationBlob.UploadAsync(processedBlobStream, overwrite: true);
+
             log.LogInformation($"Fichier {blobName} traité et sauvegardé dans {DestinationContainerName}.");
 
-            // Supprimer l'original
-            sourceBlob.Delete();
+            // Supprimer le fichier original
+            await sourceBlob.DeleteAsync();
             log.LogInformation($"Fichier original {blobName} supprimé.");
         }
         catch (Exception ex)
@@ -59,16 +60,14 @@ public static class ServiceBusQueueFunction
 
     private static void ProcessImage(Stream inputStream, Stream outputStream, string watermarkText)
     {
-        using Image image = Image.FromStream(inputStream);
-        using Bitmap bitmap = new(image);
-        using Graphics graphics = Graphics.FromImage(bitmap);
+        using var image = Image.FromStream(inputStream);
+        using var bitmap = new Bitmap(image);
+        using var graphics = Graphics.FromImage(bitmap);
 
-        // Définir les paramètres du watermark
-        Font font = new("Arial", 24, FontStyle.Bold);
-        SolidBrush brush = new SolidBrush(Color.FromArgb(50, 255, 255, 255)); // Transparence ajustée
-        SizeF textSize = graphics.MeasureString(watermarkText, font);
+        var font = new Font("Arial", 24, FontStyle.Bold);
+        var brush = new SolidBrush(Color.FromArgb(50, 255, 255, 255));
+        var textSize = graphics.MeasureString(watermarkText, font);
 
-        // Répéter le watermark sur toute l'image
         for (float y = 0; y < bitmap.Height; y += textSize.Height + 20)
         {
             for (float x = 0; x < bitmap.Width; x += textSize.Width + 20)
@@ -77,7 +76,6 @@ public static class ServiceBusQueueFunction
             }
         }
 
-        // Sauvegarder l'image avec le watermark
         bitmap.Save(outputStream, ImageFormat.Jpeg);
     }
 }

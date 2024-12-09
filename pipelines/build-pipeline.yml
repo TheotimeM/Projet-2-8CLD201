@@ -62,8 +62,9 @@ steps:
     resourceGroupName: 'Projet-2'
     location: 'eastus'
     templateLocation: 'Linked artifact'
-    csmFile: './infra/deploy-storage.json'
-    csmParametersFile: './infra/parameters-storage.json'
+    csmFile: 'infra/deploy-storage.json'
+    csmParametersFile: 'infra/parameters-storage.json'
+
 
 # Étape 8 (Deploy) : Déployer le Service Bus
 - task: AzureResourceManagerTemplateDeployment@3

@@ -80,7 +80,8 @@
       "name": "[concat(parameters('namespaces_AzureBus_TMEB_name'), '/messagequeue/access')]",
       "location": "eastus",
       "dependsOn": [
-        "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('namespaces_AzureBus_TMEB_name'), 'messagequeue')]"
+        "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('namespaces_AzureBus_TMEB_name'), 'messagequeue')]",
+        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_AzureBus_TMEB_name'))]"
       ],
       "properties": {
         "rights": [

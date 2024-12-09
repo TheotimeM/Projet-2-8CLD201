@@ -1,6 +1,8 @@
 using System;
 using System.IO;
-using Microsoft.Azure.Functions.Worker;
+using System.Threading.Tasks;
+using Microsoft.Azure.Functions.Worker; // Important: Doit être avant les extensions
+using Microsoft.Azure.Functions.Worker.Extensions.Storage.Blobs;
 using Microsoft.Extensions.Logging;
 using Azure.Messaging.ServiceBus;
 

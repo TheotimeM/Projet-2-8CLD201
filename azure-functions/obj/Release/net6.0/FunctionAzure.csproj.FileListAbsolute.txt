@@ -1,0 +1,6 @@
+C:\Users\ttmam\source\repos\Projet-2-8CLD201\azure-functions\obj\Release\net6.0\FunctionAzure.csproj.AssemblyReference.cache
+C:\Users\ttmam\source\repos\Projet-2-8CLD201\azure-functions\obj\Release\net6.0\FunctionAzure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ttmam\source\repos\Projet-2-8CLD201\azure-functions\obj\Release\net6.0\FunctionAzure.AssemblyInfoInputs.cache
+C:\Users\ttmam\source\repos\Projet-2-8CLD201\azure-functions\obj\Release\net6.0\FunctionAzure.AssemblyInfo.cs
+C:\Users\ttmam\source\repos\Projet-2-8CLD201\azure-functions\obj\Release\net6.0\FunctionAzure.csproj.CoreCompileInputs.cache
+C:\Users\ttmam\source\repos\Projet-2-8CLD201\azure-functions\obj\Release\net6.0\FunctionAzure.sourcelink.json

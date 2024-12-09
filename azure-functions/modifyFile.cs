@@ -2,9 +2,11 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using Azure.Storage.Blobs;
-using Microsoft.Azure.Functions.Worker;
+using System.Threading.Tasks;
+using Microsoft.Azure.Functions.Worker; // Important: Doit être avant les extensions
+using Microsoft.Azure.Functions.Worker.Extensions.ServiceBus;
 using Microsoft.Extensions.Logging;
+using Azure.Storage.Blobs;
 
 public static class ServiceBusQueueFunction
 {
@@ -25,7 +27,6 @@ public static class ServiceBusQueueFunction
 
         try
         {
-            // Vérifie si le blob existe
             var sourceBlob = sourceContainer.GetBlobClient(blobName);
             if (!await sourceBlob.ExistsAsync())
             {
@@ -33,22 +34,18 @@ public static class ServiceBusQueueFunction
                 return;
             }
 
-            // Télécharger le blob
             await using var originalBlobStream = new MemoryStream();
             await sourceBlob.DownloadToAsync(originalBlobStream);
 
-            // Appliquer un traitement (ajouter un watermark)
             await using var processedBlobStream = new MemoryStream();
             ProcessImage(originalBlobStream, processedBlobStream, "Watermark Text");
             processedBlobStream.Position = 0;
 
-            // Sauvegarder dans le conteneur cible
             var destinationBlob = destinationContainer.GetBlobClient(blobName);
             await destinationBlob.UploadAsync(processedBlobStream, overwrite: true);
 
             log.LogInformation($"Fichier {blobName} traité et sauvegardé dans {DestinationContainerName}.");
 
-            // Supprimer le fichier original
             await sourceBlob.DeleteAsync();
             log.LogInformation($"Fichier original {blobName} supprimé.");
         }

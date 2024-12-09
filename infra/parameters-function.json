@@ -9,7 +9,7 @@
       "value": "FunctionAppProjet2"
     },
     "location": {
-      "value": "Canada Central"
+      "value": "eastus"
     },
     "storageAccountName": {
       "value": "projet2b498"
@@ -18,7 +18,7 @@
       "value": "images"
     },
     "serviceBusConnectionString": {
-      "value": "Endpoint=sb://AzureBus-TMEB.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=<clé>"
+      "value": "[reference(resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', 'AzureBus-TMEB', 'RootManageSharedAccessKey'), '2017-04-01').primaryConnectionString]"
     },
     "sku": {
       "value": "Dynamic"

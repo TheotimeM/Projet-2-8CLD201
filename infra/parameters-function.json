@@ -9,7 +9,7 @@
       "value": "FunctionAppProjet2"
     },
     "location": {
-      "value": "eastus"
+      "value": "westus"
     },
     "storageAccountName": {
       "value": "storageprojet2"
@@ -21,10 +21,10 @@
       "value": "[reference(resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', 'AzureBus-TMEB', 'RootManageSharedAccessKey'), '2017-04-01').primaryConnectionString]"
     },
     "sku": {
-      "value": "Basic"
+      "value": "Dynamic"
     },
     "skuCode": {
-      "value": "B1"
+      "value": "Y1"
     },
     "hostingPlanName": {
       "value": "ASP-Projet2-8acc"

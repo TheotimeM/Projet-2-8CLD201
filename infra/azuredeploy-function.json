@@ -10,7 +10,7 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "westus"
+      "defaultValue": "eastus"
     },
     "storageAccountName": {
       "type": "string"

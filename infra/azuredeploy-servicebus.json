@@ -13,7 +13,7 @@
       "type": "Microsoft.ServiceBus/namespaces",
       "apiVersion": "2023-01-01-preview",
       "name": "[parameters('namespaces_AzureBus_TMEB_name')]",
-      "location": "eastus",
+      "location": "canadacentral",
       "sku": {
         "name": "Basic",
         "tier": "Basic"
@@ -29,7 +29,7 @@
       "type": "Microsoft.ServiceBus/namespaces/authorizationrules",
       "apiVersion": "2023-01-01-preview",
       "name": "[concat(parameters('namespaces_AzureBus_TMEB_name'), '/RootManageSharedAccessKey')]",
-      "location": "eastus",
+      "location": "canadacentral",
       "dependsOn": [
         "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_AzureBus_TMEB_name'))]"
       ],
@@ -45,7 +45,7 @@
       "type": "Microsoft.ServiceBus/namespaces/networkrulesets",
       "apiVersion": "2023-01-01-preview",
       "name": "[concat(parameters('namespaces_AzureBus_TMEB_name'), '/default')]",
-      "location": "eastus",
+      "location": "canadacentral",
       "dependsOn": [
         "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_AzureBus_TMEB_name'))]"
       ],
@@ -59,7 +59,7 @@
       "type": "Microsoft.ServiceBus/namespaces/queues",
       "apiVersion": "2023-01-01-preview",
       "name": "[concat(parameters('namespaces_AzureBus_TMEB_name'), '/messagequeue')]",
-      "location": "eastus",
+      "location": "canadacentral",
       "dependsOn": [
         "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_AzureBus_TMEB_name'))]"
       ],
@@ -78,7 +78,7 @@
       "type": "Microsoft.ServiceBus/namespaces/queues/authorizationrules",
       "apiVersion": "2023-01-01-preview",
       "name": "[concat(parameters('namespaces_AzureBus_TMEB_name'), '/messagequeue/access')]",
-      "location": "eastus",
+      "location": "canadacentral",
       "dependsOn": [
         "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('namespaces_AzureBus_TMEB_name'), 'messagequeue')]",
         "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_AzureBus_TMEB_name'))]"

@@ -60,7 +60,7 @@ steps:
   inputs:
     azureResourceManagerConnection: 'AzureConnectionSub1'
     resourceGroupName: 'Projet-2'
-    location: 'eastus'
+    location: 'canadacentral'
     templateLocation: 'Linked artifact'
     csmFile: 'infra/azuredeploy-storage.json'
     csmParametersFile: 'infra/parameters-storage.json'
@@ -71,7 +71,7 @@ steps:
   inputs:
     azureResourceManagerConnection: 'AzureConnectionSub1'
     resourceGroupName: 'Projet-2'
-    location: 'eastus'
+    location: 'canadacentral'
     templateLocation: 'Linked artifact'
     csmFile: 'infra/azuredeploy-servicebus.json'
     csmParametersFile: 'infra/parameters-servicebus.json'
@@ -120,7 +120,7 @@ steps:
   inputs:
     azureResourceManagerConnection: 'AzureConnectionSub1'
     resourceGroupName: 'Projet-2'
-    location: 'eastus'
+    location: 'canadacentral'
     templateLocation: 'Linked artifact'
     csmFile: 'infra/azuredeploy-function.json'
     csmParametersFile: 'infra/parameters-function.json'

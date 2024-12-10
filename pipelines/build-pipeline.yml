@@ -77,10 +77,14 @@ steps:
     csmParametersFile: 'infra/parameters-servicebus.json'
 
 # Étape 9 : Attente après le déploiement du Service Bus
-- script: |
-    echo "Attente de 30 secondes pour la disponibilité du Service Bus..."
-    Start-Sleep -Seconds 30
+- task: PowerShell@2
   displayName: 'Attente de la disponibilité du Service Bus'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Attente de 30 secondes pour la disponibilité du Service Bus..."
+      Start-Sleep -Seconds 30
+
 
 # Étape 10 : Vérifier l'existence du Service Bus
 - task: AzureCLI@2

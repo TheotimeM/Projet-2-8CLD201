@@ -21,10 +21,10 @@
       "value": "[reference(resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', 'AzureBus-TMEB', 'RootManageSharedAccessKey'), '2017-04-01').primaryConnectionString]"
     },
     "sku": {
-      "value": "Dynamic"
+      "value": "Premium"
     },
     "skuCode": {
-      "value": "Y1"
+      "value": "P1v2"
     },
     "hostingPlanName": {
       "value": "ASP-Projet2-8acc"

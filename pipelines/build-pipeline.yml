@@ -76,14 +76,13 @@ steps:
     csmFile: 'infra/azuredeploy-servicebus.json'
     csmParametersFile: 'infra/parameters-servicebus.json'
 
-# Étape 8.1 : Attente après le déploiement du Service Bus
+# Étape 9 : Attente après le déploiement du Service Bus
 - script: |
     echo "Attente de 30 secondes pour la disponibilité du Service Bus..."
     Start-Sleep -Seconds 30
   displayName: 'Attente de la disponibilité du Service Bus'
-  dependsOn: Déployer le Service Bus
 
-# Étape 9 : Vérifier l'existence du Service Bus
+# Étape 10 : Vérifier l'existence du Service Bus
 - task: AzureCLI@2
   displayName: 'Vérifier l’existence du Service Bus'
   inputs:
@@ -94,9 +93,8 @@ steps:
       az servicebus namespace show `
         --resource-group 'Projet-2' `
         --name 'AzureBus-TMEB'
-  dependsOn: Attente de la disponibilité du Service Bus
 
-# Étape 10 (Deploy) : Récupérer la clé de connexion Service Bus
+# Étape 11 (Deploy) : Récupérer la clé de connexion Service Bus
 - task: AzureCLI@2
   displayName: 'Récupérer la clé de connexion Service Bus'
   inputs:
@@ -110,10 +108,9 @@ steps:
         --name 'RootManageSharedAccessKey' `
         --query 'primaryConnectionString' -o tsv
       Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
-  dependsOn: Vérifier l’existence du Service Bus
   condition: succeeded()
 
-# Étape 11 (Deploy) : Déployer la Function App
+# Étape 12 (Deploy) : Déployer la Function App
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Déployer la Function App'
   inputs:
@@ -126,7 +123,7 @@ steps:
     overrideParameters: >
       -serviceBusConnectionString "$(ServiceBusConnectionString)"
 
-# Étape 12 (Deploy) : Vérification finale
+# Étape 13 (Deploy) : Vérification finale
 - script: |
     echo "Clé Service Bus utilisée : $(ServiceBusConnectionString)"
     echo "Déploiement terminé avec succès."

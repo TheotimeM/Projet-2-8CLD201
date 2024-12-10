@@ -48,7 +48,6 @@
       "location": "[parameters('location')]",
       "kind": "functionapp",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
         "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
       ],
       "properties": {

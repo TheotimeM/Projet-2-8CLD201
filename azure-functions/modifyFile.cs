@@ -17,7 +17,7 @@ namespace Company.Functions
 
         [Function("ServiceBusQueueFunction")]
         public async Task Run(
-            [ServiceBusTrigger("imagequeue", Connection = "ServiceBusConnectionString")] string blobName,
+            [ServiceBusTrigger("messagequeue", Connection = "ServiceBusConnectionString")] string blobName,
             FunctionContext context)
         {
             var logger = context.GetLogger("ServiceBusQueueFunction");

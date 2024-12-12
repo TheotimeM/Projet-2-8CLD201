@@ -11,7 +11,7 @@ namespace Company.Functions
 {
     public class BlobTriggeredFunction
     {
-        private const string QueueName = "imagequeue";
+        private const string QueueName = "messagequeue";
 
         [Function("BlobTriggeredFunction")]
         public async Task Run(

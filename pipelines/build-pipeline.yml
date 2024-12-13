@@ -39,7 +39,16 @@ steps:
   workingDirectory: './azure-functions'
   displayName: 'Publier le projet'
 
-# Étape 4.1 : Vérifier les fichiers publiés
+# Étape 4.1 : Afficher le répertoire actuel et ses fichiers
+- script: |
+    echo "Répertoire actuel :"
+    cd
+    echo "Fichiers présents dans le répertoire actuel :"
+    dir
+  displayName: 'Afficher le répertoire actuel'
+
+
+# Étape 4.2 : Vérifier les fichiers publiés
 - script: |
     echo "Liste des fichiers publiés :"
     dir ./azure-functions/publishs

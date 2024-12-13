@@ -43,7 +43,7 @@ steps:
 - script: |
     echo "Liste des fichiers publiés :"
     dir ./azure-functions/publishs
-  workingDirectory: './azure-functions'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: 'Vérifier les fichiers publiés'
 
 # Étape 5 (Build) : Archiver le package publié

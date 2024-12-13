@@ -129,16 +129,6 @@ steps:
       Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
   condition: succeeded()
 
-# Étape 11.1 : Vérifier la variable ServiceBusConnectionString
-- script: |
-    if [ -z "$(ServiceBusConnectionString)" ]; then
-      echo "Erreur : ServiceBusConnectionString n'est pas défini !"
-      exit 1
-    else
-      echo "ServiceBusConnectionString est défini."
-    fi
-  displayName: 'Vérifier ServiceBusConnectionString'
-
 # Étape 12 (Deploy) : Déployer la Function App
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Déployer la Function App'

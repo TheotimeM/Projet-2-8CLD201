@@ -39,15 +39,6 @@ steps:
   workingDirectory: './azure-functions'
   displayName: 'Publier le projet'
 
-# Étape 4.2 : Vérifier les fichiers publiés
-- script: |
-    echo "Répertoire actuel : $(System.DefaultWorkingDirectory)"
-    echo "Contenu du répertoire azure-functions :"
-    dir "$(System.DefaultWorkingDirectory)\azure-functions"
-    echo "Contenu du répertoire publishs :"
-    dir "$(System.DefaultWorkingDirectory)\azure-functions\publishs"
-  displayName: 'Vérifier les fichiers publiés'
-
 
 # Étape 5 (Build) : Archiver le package publié
 - task: ArchiveFiles@2
@@ -56,12 +47,6 @@ steps:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/azure-functions/publishs'
     archiveFile: '$(Build.ArtifactStagingDirectory)/azure-functions.zip'
     archiveType: 'zip'
-
-# Étape 5.1 : Vérifier le contenu du package ZIP
-- script: |
-    echo "Vérification du contenu du fichier azure-functions.zip"
-    tar -tf $(Build.ArtifactStagingDirectory)/azure-functions.zip
-  displayName: 'Vérifier le contenu du package ZIP'
 
 # Étape 6 (Build) : Publier l’artefact de build
 - task: PublishBuildArtifacts@1
@@ -100,18 +85,6 @@ steps:
     script: |
       Write-Host "Attente de 30 secondes pour la disponibilité du Service Bus..."
       Start-Sleep -Seconds 30
-
-# Étape 10 : Vérifier l'existence du Service Bus
-- task: AzureCLI@2
-  displayName: 'Vérifier l’existence du Service Bus'
-  inputs:
-    azureSubscription: 'AzureConnectionSub1'
-    scriptType: 'ps'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      az servicebus namespace show `
-        --resource-group 'Projet-2' `
-        --name 'AzureBus-TMEB'
 
 # Étape 11 (Deploy) : Récupérer la clé de connexion Service Bus
 - task: AzureCLI@2

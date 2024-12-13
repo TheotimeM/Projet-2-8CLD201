@@ -41,31 +41,29 @@ steps:
 
 # Étape 4.1 : Afficher le répertoire actuel et ses fichiers
 - script: |
-    echo "Répertoire actuel :"
-    cd
+    echo "Répertoire actuel : $(System.DefaultWorkingDirectory)"
     echo "Fichiers présents dans le répertoire actuel :"
     dir
   displayName: 'Afficher le répertoire actuel'
 
-
 # Étape 4.2 : Vérifier les fichiers publiés
 - script: |
     echo "Liste des fichiers publiés :"
-    dir ./azure-functions/publishs
+    dir $(System.DefaultWorkingDirectory)/azure-functions/publishs
   displayName: 'Vérifier les fichiers publiés'
 
 # Étape 5 (Build) : Archiver le package publié
 - task: ArchiveFiles@2
   displayName: 'Archiver les fichiers publiés'
   inputs:
-    rootFolderOrFile: './azure-functions/publishs'
-    archiveFile: '$(Build.ArtifactStagingDirectory)\azure-functions.zip'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/azure-functions/publishs'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/azure-functions.zip'
     archiveType: 'zip'
 
 # Étape 5.1 : Vérifier le contenu du package ZIP
 - script: |
     echo "Vérification du contenu du fichier azure-functions.zip"
-    tar -tvf $(Build.ArtifactStagingDirectory)\azure-functions.zip
+    tar -tf $(Build.ArtifactStagingDirectory)/azure-functions.zip
   displayName: 'Vérifier le contenu du package ZIP'
 
 # Étape 6 (Build) : Publier l’artefact de build

@@ -8,56 +8,55 @@ variables:
   ServiceBusConnectionString: ''
 
 steps:
-# Étape 1 (Build) : Installer le SDK .NET 8.x
+# etape 1 (Build) : Installer le SDK .NET 8.x
 - task: UseDotNet@2
   displayName: 'Installer .NET SDK 8.x'
   inputs:
     packageType: 'sdk'
     version: '8.0.100'
 
-# Étape 2 (Build) : Restaurer les dépendances
+# etape 2 (Build) : Restaurer les dependances
 - script: |
     dotnet restore
   workingDirectory: './azure-functions'
-  displayName: 'Restaurer les dépendances'
+  displayName: 'Restaurer les dependances'
 
-# Étape 2.1 (Build) : Lister les dépendances NuGet
+# etape 2.1 (Build) : Lister les dependances NuGet
 - script: |
     dotnet list package
   workingDirectory: './azure-functions'
-  displayName: 'Lister les dépendances NuGet'
+  displayName: 'Lister les dependances NuGet'
 
-# Étape 3 (Build) : Compiler le projet
+# etape 3 (Build) : Compiler le projet
 - script: |
     dotnet build -c Release
   workingDirectory: './azure-functions'
   displayName: 'Compiler le projet'
 
-# Étape 4 (Build) : Publier le projet
+# etape 4 (Build) : Publier le projet
 - script: |
     dotnet publish -c Release -o ./publishs
   workingDirectory: './azure-functions'
   displayName: 'Publier le projet'
 
-
-# Étape 5 (Build) : Archiver le package publié
+# etape 5 (Build) : Archiver le package publie
 - task: ArchiveFiles@2
-  displayName: 'Archiver les fichiers publiés'
+  displayName: 'Archiver les fichiers publies'
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/azure-functions/publishs'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/azure-functions.zip'
+    rootFolderOrFile: './azure-functions/publishs'
+    archiveFile: '$(Build.ArtifactStagingDirectory)\\azure-functions.zip'
     archiveType: 'zip'
 
-# Étape 6 (Build) : Publier l’artefact de build
+# etape 6 (Build) : Publier lartefact de build
 - task: PublishBuildArtifacts@1
-  displayName: 'Publier l’artefact'
+  displayName: 'Publier lartefact'
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'FunctionApp'
 
-# Étape 7 (Deploy) : Déployer le Blob Storage
+# etape 7 (Deploy) : Deployer le Blob Storage
 - task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'Déployer le Blob Storage'
+  displayName: 'Deployer le Blob Storage'
   inputs:
     azureResourceManagerConnection: 'AzureConnectionSub1'
     resourceGroupName: 'Projet-2'
@@ -66,9 +65,9 @@ steps:
     csmFile: 'infra/azuredeploy-storage.json'
     csmParametersFile: 'infra/parameters-storage.json'
 
-# Étape 8 (Deploy) : Déployer le Service Bus
+# etape 8 (Deploy) : Deployer le Service Bus
 - task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'Déployer le Service Bus'
+  displayName: 'Deployer le Service Bus'
   inputs:
     azureResourceManagerConnection: 'AzureConnectionSub1'
     resourceGroupName: 'Projet-2'
@@ -77,18 +76,31 @@ steps:
     csmFile: 'infra/azuredeploy-servicebus.json'
     csmParametersFile: 'infra/parameters-servicebus.json'
 
-# Étape 9 : Attente après le déploiement du Service Bus
+# etape 9 : Attente apres le deploiement du Service Bus
 - task: PowerShell@2
-  displayName: 'Attente de la disponibilité du Service Bus'
+  displayName: 'Attente de la disponibilite du Service Bus'
   inputs:
     targetType: 'inline'
     script: |
-      Write-Host "Attente de 30 secondes pour la disponibilité du Service Bus..."
+      Write-Host "Attente de 30 secondes pour la disponibilite du Service Bus..."
       Start-Sleep -Seconds 30
 
-# Étape 11 (Deploy) : Récupérer la clé de connexion Service Bus
+
+# etape 10 : Verifier l'existence du Service Bus
 - task: AzureCLI@2
-  displayName: 'Récupérer la clé de connexion Service Bus'
+  displayName: 'Verifier leexistence du Service Bus'
+  inputs:
+    azureSubscription: 'AzureConnectionSub1'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az servicebus namespace show `
+        --resource-group 'Projet-2' `
+        --name 'AzureBus-TMEB'
+
+# etape 11 (Deploy) : Recuperer la cle de connexion Service Bus
+- task: AzureCLI@2
+  displayName: 'Recuperer la cle de connexion Service Bus'
   inputs:
     azureSubscription: 'AzureConnectionSub1'
     scriptType: 'ps'
@@ -102,9 +114,9 @@ steps:
       Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
   condition: succeeded()
 
-# Étape 12 (Deploy) : Déployer la Function App
+# etape 12 (Deploy) : Deployer la Function App
 - task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'Déployer la Function App'
+  displayName: 'Deployer la Function App'
   inputs:
     azureResourceManagerConnection: 'AzureConnectionSub1'
     resourceGroupName: 'Projet-2'
@@ -115,16 +127,8 @@ steps:
     overrideParameters: >
       -serviceBusConnectionString "$(ServiceBusConnectionString)"
 
-# Etape 13 (Deploy) : Déployer les fonctions
-- task: AzureFunctionApp@1
-  inputs:
-    azureSubscription: 'AzureConnectionSub1'
-    appType: 'functionApp'
-    appName: 'FunctionAppProjet2'
-    package: '$(System.DefaultWorkingDirectory)/azure-functions.zip'
-
-# Étape 13 (Deploy) : Vérification finale
+# etape 13 (Deploy) : Verification finale
 - script: |
-    echo "Clé Service Bus utilisée : $(ServiceBusConnectionString)"
-    echo "Déploiement terminé avec succès."
-  displayName: 'Vérification finale'
+    echo "Cle Service Bus utilisee : $(ServiceBusConnectionString)"
+    echo "Deploiement termine avec succes."
+  displayName: 'Verification finale'

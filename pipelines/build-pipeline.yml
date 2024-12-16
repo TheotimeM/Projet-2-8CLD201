@@ -39,17 +39,33 @@ steps:
   workingDirectory: './azure-functions'
   displayName: 'Publier le projet'
 
+# etape 4.2 : Verifier les fichiers publies
+- script: |
+    echo "Repertoire actuel : $(System.DefaultWorkingDirectory)"
+    echo "Contenu du repertoire azure-functions :"
+    dir "$(System.DefaultWorkingDirectory)\azure-functions"
+    echo "Contenu du repertoire publishs :"
+    dir "$(System.DefaultWorkingDirectory)\azure-functions\publishs"
+  displayName: 'Verifier les fichiers publies'
+
+
 # etape 5 (Build) : Archiver le package publie
 - task: ArchiveFiles@2
   displayName: 'Archiver les fichiers publies'
   inputs:
-    rootFolderOrFile: './azure-functions/publishs'
-    archiveFile: '$(Build.ArtifactStagingDirectory)\\azure-functions.zip'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/azure-functions/publishs'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/azure-functions.zip'
     archiveType: 'zip'
 
-# etape 6 (Build) : Publier lartefact de build
+# etape 5.1 : Verifier le contenu du package ZIP
+- script: |
+    echo "Verification du contenu du fichier azure-functions.zip"
+    tar -tf $(Build.ArtifactStagingDirectory)/azure-functions.zip
+  displayName: 'Verifier le contenu du package ZIP'
+
+# etape 6 (Build) : Publier leartefact de build
 - task: PublishBuildArtifacts@1
-  displayName: 'Publier lartefact'
+  displayName: 'Publier leartefact'
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'FunctionApp'
@@ -85,7 +101,6 @@ steps:
       Write-Host "Attente de 30 secondes pour la disponibilite du Service Bus..."
       Start-Sleep -Seconds 30
 
-
 # etape 10 : Verifier l'existence du Service Bus
 - task: AzureCLI@2
   displayName: 'Verifier leexistence du Service Bus'
@@ -114,9 +129,9 @@ steps:
       Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString]$CONNECTION_STRING"
   condition: succeeded()
 
-# etape 12 (Deploy) : Deployer la Function App
+# Etape 12 (Deploy) : DEployer la Function App
 - task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'Deployer la Function App'
+  displayName: 'DEployer la Function App'
   inputs:
     azureResourceManagerConnection: 'AzureConnectionSub1'
     resourceGroupName: 'Projet-2'
@@ -127,8 +142,16 @@ steps:
     overrideParameters: >
       -serviceBusConnectionString "$(ServiceBusConnectionString)"
 
-# etape 13 (Deploy) : Verification finale
+# Etape 13 (Deploy) : DEployer les fonctions
+- task: AzureFunctionApp@1
+  inputs:
+    azureSubscription: 'AzureConnectionSub1'
+    appType: 'functionApp'
+    appName: 'FunctionAppProjet2'
+    package: '$(System.DefaultWorkingDirectory)/azure-functions.zip'
+
+# Etape 14 (Deploy) : VErification finale
 - script: |
-    echo "Cle Service Bus utilisee : $(ServiceBusConnectionString)"
+    echo "ClE Service Bus utilisEe : $(ServiceBusConnectionString)"
     echo "Deploiement termine avec succes."
   displayName: 'Verification finale'

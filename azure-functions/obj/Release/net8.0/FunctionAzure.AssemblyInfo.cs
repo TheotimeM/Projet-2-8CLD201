@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FunctionAzure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cb6f5af34599243a2430e9bf860949dfd58c5a42")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7794905591156705b98f14a67af202f2e03f53f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("FunctionAzure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FunctionAzure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
